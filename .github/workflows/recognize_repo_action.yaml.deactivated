@@ -1,0 +1,44 @@
+name: Test to catch on push or on release
+
+on:
+  push:
+    branches:
+      - main
+      # - '**'
+  # release:
+  #   types: [published]
+
+env:
+  # contains the branch name on push without tag (here main) or the tag on push with tag
+  EVENT: ${{ github.ref_name }}
+
+jobs:
+  set-namespace:
+    runs-on: ubuntu-latest
+    outputs:
+      namespace: ${{ steps.set.outputs.NAMESPACE }}
+      site: ${{ steps.set.outputs.SITE }}
+    steps:
+      - name: Set namespace depending on repo action
+        id: set
+        run: |
+          case $EVENT in
+            main) 
+              echo "NAMESPACE="staging"" >> $GITHUB_OUTPUT
+              echo "SITE="www.thomastoumasu.xx.kg"" >> $GITHUB_OUTPUT ;;
+            *) 
+              echo "NAMESPACE="production"" >> $GITHUB_OUTPUT
+              echo "SITE="www.thomastoumasu.dpdns.org"" >> $GITHUB_OUTPUT ;;
+          esac
+
+  display-namespace:
+    needs: [set-namespace]
+    runs-on: ubuntu-latest
+    env:
+      NAMESPACE: ${{ needs.set-namespace.outputs.namespace }}
+      SITE: ${{ needs.set-namespace.outputs.site }}
+    steps:
+      - name: Display namespace
+        run: |
+          echo "namespace is $NAMESPACE"
+          echo "site is $SITE"
