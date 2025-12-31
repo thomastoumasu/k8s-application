@@ -86,6 +86,7 @@ jobs:
       - name: "Form the images names"
         id: form
         run: |-
+          echo "NAMESPACE="production"" >> $GITHUB_OUTPUT
           echo "backend image tag is $REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA"
           # echo "BACKEND_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA" >> $GITHUB_ENV
           echo "BACKEND_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA" >> $GITHUB_OUTPUT
@@ -116,7 +117,7 @@ jobs:
 
   patch-configuration:
     name: Patches and checks in configuration repo
-    needs: [set-environment, publish-images]
+    needs: [publish-images, set-environment]
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ needs.set-environment.outputs.namespace }}
