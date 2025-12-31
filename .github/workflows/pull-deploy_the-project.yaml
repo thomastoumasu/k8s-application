@@ -51,7 +51,7 @@ jobs:
               ;;
           esac
 
-  build-publish-images:
+  publish-images:
     name: Builds and publishes images
     needs: [set-environment]
     runs-on: ubuntu-latest
@@ -86,6 +86,7 @@ jobs:
       - name: "Form the images names"
         id: form
         run: |-
+          echo "backend image tag is $REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA"
           # echo "BACKEND_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA" >> $GITHUB_ENV
           echo "BACKEND_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$BACKEND_IMAGE:$NAMESPACE-$GITHUB_SHA" >> $GITHUB_OUTPUT
           # echo "FRONTEND_IMAGE_TAG=$REGISTRY/$PROJECT_ID/$REPOSITORY/$FRONTEND_IMAGE:$NAMESPACE-$GITHUB_SHA" >> $GITHUB_ENV
@@ -115,15 +116,15 @@ jobs:
 
   patch-configuration:
     name: Patches and checks in configuration repo
-    needs: [set-environment, build-publish-images]
+    needs: [set-environment, publish-images]
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ needs.set-environment.outputs.namespace }}
-      BACKEND_IMAGE_TAG: ${{ needs.build-publish-images.outputs.backend }}
-      FRONTEND_IMAGE_TAG: ${{ needs.build-publish-images.outputs.frontend }}
-      IMAGEFINDER_IMAGE_TAG: ${{ needs.build-publish-images.outputs.image-finder }}
-      DB_IMAGE_TAG: ${{ needs.build-publish-images.outputs.db }}
-      BROADCASTER_IMAGE_TAG: ${{ needs.build-publish-images.outputs.broadcaster }}
+      BACKEND_IMAGE_TAG: ${{ needs.publish-images.outputs.backend }}
+      FRONTEND_IMAGE_TAG: ${{ needs.publish-images.outputs.frontend }}
+      IMAGEFINDER_IMAGE_TAG: ${{ needs.publish-images.outputs.image-finder }}
+      DB_IMAGE_TAG: ${{ needs.publish-images.outputs.db }}
+      BROADCASTER_IMAGE_TAG: ${{ needs.publish-images.outputs.broadcaster }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -136,6 +137,7 @@ jobs:
       - name: Defines the right kustomization path and file
         id: define-file
         run: |-
+          echo "backend image tag is $BACKEND_IMAGE_TAG"
           echo "KUSTOMIZATION_PATH="./the_project/kustomize/overlays/${NAMESPACE}"" >> $GITHUB_ENV
           echo "KUSTOMIZATION_FILE="./the_project/kustomize/overlays/${NAMESPACE}/kustomization.yaml"" >> $GITHUB_ENV
 
