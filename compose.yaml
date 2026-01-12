@@ -1,0 +1,60 @@
+# As a comparison to k8s, deploy the project with docker compose (frontend and backend behind a proxy server).
+# Can use containerized mongo (e.g., stateful) or not (e.g., stateless, with atlas): only adapt the MONGODB_URI of backend accordingly (fill in pw in atlas case).
+# Nats will also publish if webhook is filled in the broadcaster. Both nats and broadcaster service are optional.
+services:
+  frontend:
+    image: frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_URL: http://localhost:8080/api/todos
+    volumes:
+      - ./:/usr/share/nginx/html/shared
+    container_name: frontend
+  my-nats:
+    image: nats
+    container_name: nats
+  broadcaster:
+    image: broadcaster
+    build:
+      context: ./broadcaster
+    environment:
+      - NATS_URL=nats://my-nats:4222
+      - DISCORD_WEBHOOK=<webhook>
+  image-finder:
+    image: image-finder
+    build:
+      context: ./image-finder
+    volumes:
+      - ./:/shared
+  # mongo: # if wishes to use containerized mongo instead of atlas.
+  #   image: mongo
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+  #     MONGO_INITDB_DATABASE: the_database
+  #   volumes:
+  #     - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js # sets up db, necessary
+  #     # - ./mongo/mongo_data:/data/db # persists the data, optional
+  #   command: mongod --quiet --logpath /dev/null
+  #   container_name: mongo
+  backend:
+    image: backend
+    build:
+      context: ./backend/
+    environment:
+      - NATS_URL=nats://my-nats:4222
+      # - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+      - MONGODB_URI=mongodb+srv://thomastoumasu:<password>@cluster0.hmhtqmw.mongodb.net/?appName=Cluster0
+      - ENVIRONMENT=production
+    container_name: backend
+  reverse-proxy:
+    image: nginx:1.25-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - frontend
+      - backend

@@ -8,7 +8,7 @@ COPY --chown=node:node . .
 # ENV VITE_BACKEND_URL=http://34.88.70.145/api/todos # for gke: IP allocated by gke to its gateway or ingress
 # ENV VITE_BACKEND_URL=http://www.thomastoumasu.dpdns.org/api/todos  # for gke, deployment on main
 # ENV VITE_BACKEND_URL=http://www.thomastoumasu.xx.kg/api/todos # for gke, deployment on branch
-ARG VITE_BACKEND_URL=http://www.thomastoumasu.dpdns.org/api/todos
+ARG VITE_BACKEND_URL
 ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
 RUN npm run build
 USER node
