@@ -7,7 +7,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://localhost:8080/api/todos
+        VITE_BACKEND_URL: http://localhost:80/api/todos
     volumes:
       - ./:/usr/share/nginx/html/shared
     container_name: frontend
@@ -53,7 +53,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - 8080:80
+      - 80:80
     container_name: reverse-proxy
     depends_on:
       - frontend
