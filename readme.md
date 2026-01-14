@@ -6,11 +6,16 @@ Goal: To use different repositories for the Kubernetes configurations (repo: tho
 A push here in code repo triggers a github action here that builds the images and updates the configuration files there with the image names.  
 Argo is linked with the configuration repo there and syncs the cluster accordingly.
 
-Added a compose.yaml to be able to deploy here autonomously with docker compose as well.
+Added a compose.yaml to be able to deploy here autonomously with docker compose as well, with reverse-proxy for frontend and backend + load balancer in front of the reverse proxy.  
 -Just run in repo root:  
-docker compose up (to access under localhost)
+docker compose up --scale backend=3 --scale broadcaster=4  
+accessible under lb.colasloth.com, see [clone and open locally](https://github.com/thomastoumasu/container-applications-main/blob/main/32Docker%20networking%20-%20MOOC.fi%20courses.pdf)
+to check logs: docker compose logs backend --index 3
 
--Or in Google Cloud Compute Engine, provision a VM with ubuntu and enable http access, then SSH:  
+-Can also just remove the lb and open the reverse-proxy port (e.g., port: 80:80) to have the app accessible under localhost, albeit without scaling possibilities:  
+docker-compose build --build-arg VITE_BACKEND_URL=http://localhost:80/api/todos && docker compose up
+
+-Can also deploy this on Google Cloud Compute Engine: provision a (arm C4a) VM with ubuntu (not minimal) and enable http traffic, then SSH:  
 sudo -s  
 wget --no-check-certificate -O kernel.zip https://github.com/thomastoumasu/k8s-application/archive/main.zip  
 unzip kernel.zip  
