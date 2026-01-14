@@ -18,8 +18,10 @@ docker-compose build --build-arg VITE_BACKEND_URL=http://localhost:80/api/todos 
 -Can also deploy this on Google Cloud Compute Engine: provision a (arm C4a) VM with ubuntu (not minimal) and enable http traffic, then SSH:  
 sudo -s  
 wget --no-check-certificate -O kernel.zip https://github.com/thomastoumasu/k8s-application/archive/main.zip  
+apt install unzip  
 unzip kernel.zip  
 install docker following https://docs.docker.com/engine/install/ubuntu/  
 then:  
+cd k8s-application-main  
 docker-compose build --build-arg VITE_BACKEND_URL=<external_ip>:80/api/todos
 docker compose up (to access under <external_ip>)
