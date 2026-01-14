@@ -7,7 +7,7 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_BACKEND_URL: http://thomastoumasu.dpdns.org/api/todos
+        VITE_BACKEND_URL: http://www.thomastoumasu.dpdns.org/api/todos
     volumes:
       - ./:/usr/share/nginx/html/shared
   my-nats:
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     environment:
-      - VIRTUAL_HOST=thomastoumasu.dpdns.org # since proxy.127.0.0.1 not allowed
+      - VIRTUAL_HOST=www.thomastoumasu.dpdns.org # since proxy.127.0.0.1 not allowed
     # - VIRTUAL_PORT=80 # seems not needed (already exposed or 80 might be the default)
     ports:
       - 80
