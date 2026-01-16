@@ -116,7 +116,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: thomastoumasu/k8s-submission
+          repository: thomastoumasu/k8s-configuration
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Set up Kustomize
