@@ -1,6 +1,4 @@
-# Application repo for
-
-https://courses.mooc.fi/org/uh-cs/courses/devops-with-kubernetes/chapter-5/gitops
+# Application repo for microservices deployment with Kubernetes
 
 Goal: To use different repositories for the Kubernetes configurations (repo: thomastoumasu/k8s-application) and the code (this repo).  
 A push here in code repo triggers a github action here that builds the images and updates the configuration files there with the image names.  
