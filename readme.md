@@ -1,6 +1,6 @@
 # Application repo for microservices deployment with Kubernetes
 
-Goal: To use different repositories for the Kubernetes configurations (repo: thomastoumasu/k8s-application) and the code (this repo).  
+Goal: To use different repositories for the Kubernetes configurations (repo: thomastoumasu/k8s-configuration) and the code (this repo).  
 A push here in code repo triggers a github action here that builds the images and updates the configuration files there with the image names.  
 Argo is linked with the configuration repo there and syncs the cluster accordingly.
 
