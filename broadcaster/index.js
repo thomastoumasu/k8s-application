@@ -1,19 +1,19 @@
-import axios from 'axios';
-import NATS from 'nats';
-import os from 'os';
+import axios from "axios";
+import NATS from "nats";
+import os from "os";
 
 const hostname = os.hostname();
 
 const nc = NATS.connect({
-  url: process.env.NATS_URL || 'nats://nats:4222',
+  url: process.env.NATS_URL || "nats://nats:4222",
 });
 
-const webhook = process.env.DISCORD_WEBHOOK || 'https://study.cs.helsinki.fi/discord/webhooks/';
+const webhook = process.env.DISCORD_WEBHOOK || "https://bla.bla.bla.fi/discord/webhooks/";
 
 let preoccupied = false;
 
 const setReadyToBroadcast = () => {
-  const data_subscription = nc.subscribe('todos', { queue: 'broadcaster.workers' }, msg => {
+  const data_subscription = nc.subscribe("todos", { queue: "broadcaster.workers" }, (msg) => {
     console.log(`Broadcaster ${hostname} received msg: ${msg}`);
     preoccupied = true;
     nc.unsubscribe(data_subscription);
@@ -24,14 +24,14 @@ const setReadyToBroadcast = () => {
 
 const broadcastTodo = async ({ text, done }) => {
   // https://discord.com/developers/docs/resources/message#embed-object
-  console.log('Processing...');
+  console.log("Processing...");
   const content = done
-    ? 'A Todo was completed on http://www.thomastoumasu.dpdns.org'
-    : 'A new Todo was created on http://www.thomastoumasu.dpdns.org';
+    ? "A Todo was completed on http://www.thomastoumasu.dpdns.org"
+    : "A new Todo was created on http://www.thomastoumasu.dpdns.org";
   const payload = {
     content,
-    username: 'thomastoumasu',
-    avatar_url: 'https://gravatar.com/avatar/42dd784b61ac3992e45bdf1d1454ec05?s=200&d=robohash&r=r',
+    username: "thomastoumasu",
+    avatar_url: "https://gravatar.com/avatar/42dd784b61ac3992e45bdf1d1454ec05?s=200&d=robohash&r=r",
     embeds: [
       {
         description: text,
